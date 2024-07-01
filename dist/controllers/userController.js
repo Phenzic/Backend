@@ -21,7 +21,7 @@ const updateUser = (req, res) => {
         res.json(updatedUser);
     }
     else {
-        res.status(404).send('User not found');
+        res.status(404).send("User not found");
     }
 };
 exports.updateUser = updateUser;
@@ -33,7 +33,7 @@ const deleteUser = (req, res) => {
         res.status(204).send();
     }
     else {
-        res.status(404).send('User not found');
+        res.status(404).send("User not found");
     }
 };
 exports.deleteUser = deleteUser;
