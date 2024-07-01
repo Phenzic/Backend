@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "nodemon",
-    "format": "prettier --write \"src/***.ts\""
+    "format": "prettier --write ."
   },
   "husky": {
     "hooks": {
@@ -16,7 +16,7 @@
     }
   },
   "lint-staged": {
-    "src/**/*.ts": [
+    "*.ts": [
       "prettier --write",
       "git add"
     ]

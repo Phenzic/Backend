@@ -11,7 +11,7 @@
 - [Event Payload](#event-payload)
 - [License](#license)
 
-**_Note: development server url: https://backend-w4ap.onrender.com/**
+**\_Note: development server url: https://backend-w4ap.onrender.com/**
 
 ## Installation
 
@@ -19,7 +19,7 @@
 
    ```bash
     git clone git@github.com:Medilog-org/Backend.git
-    cd Backend 
+    cd Backend
    ```
 
 2. Install dependencies:
@@ -69,7 +69,6 @@ Configuration settings can be adjusted in the `config/index.ts` file. Make sure 
 ## User Requests
 
 For detailed information about the user APIs, refer to the [User Documentation](./docs/user_endpoints.md).
-
 
 ## License
 
