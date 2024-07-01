@@ -1,13 +1,47 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import userRoutes from './routes/userRoutes';
+import http from "http";
+import https from "https";
+import config from "./config/index";
+import { connectDB } from "./config/database";
+import app from "./app";
+import logger from "./config/logger";
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = config.PORT;
 
-app.use(bodyParser.json());
-app.use('/users', userRoutes);
+const keepAliveAgent = new http.Agent({ keepAlive: true });
+const keepAliveSecureAgent = new https.Agent({ keepAlive: true });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-});
+const options = {
+  hostname: "",
+  port: 80 || 443,
+  path: "/",
+  method: "GET",
+  agent: keepAliveAgent || keepAliveSecureAgent,
+};
+
+(async () => {
+  try {
+    await connectDB();
+    logger.info("Connected to DB");
+
+    const req = http.request(options, (res) => {
+      logger.info(`STATUS: ${res.statusCode}`);
+      res.setEncoding("utf8");
+      res.on("data", (chunk) => {
+        logger.info(`BODY: ${chunk}`);
+      });
+    });
+
+    req.on("error", (e) => {
+      logger.error(`Problem with request: ${e.message}`);
+    });
+
+    req.end();
+
+    app.listen(PORT, () => {
+      logger.info(`Express server is listening on ${PORT}`);
+    });
+  } catch (error) {
+    logger.error("Error starting server:", error);
+    process.exit(1);
+  }
+})();
