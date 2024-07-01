@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(cors());
 
 app.get("/", (_req, res) => {
-  res.send({
+  res.json({
     message: "Welcome to Medilog Server",
     docs: "https://docs.Medilog.com",
   });

@@ -1,4 +1,4 @@
-# SEICHAT Server Requests
+# MediLog Backend Documentation
 
 ## Table of Contents
 
@@ -11,14 +11,14 @@
 - [Event Payload](#event-payload)
 - [License](#license)
 
-**_Note: development server url:**
+**_Note: development server url: https://backend-w4ap.onrender.com/**
 
 ## Installation
 
 1. Clone the repository:
 
    ```bash
-    git clone 
+    git clone git@github.com:Medilog-org/Backend.git
     cd Backend 
    ```
 
@@ -61,7 +61,7 @@ Configuration settings can be adjusted in the `config/index.ts` file. Make sure 
 
 ```json
 {
-  "message": "Welcome to SEICHAT Server",
+  "message": "Welcome to MediLogs Server",
   "docs": "https://docs.medilog.com"
 }
 ```
