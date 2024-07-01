@@ -12,7 +12,7 @@ const keepAliveSecureAgent = new https.Agent({ keepAlive: true });
 
 const options = {
   hostname: "",
-  port: 80 || 443,
+  port: PORT,
   path: "/",
   method: "GET",
   agent: keepAliveAgent || keepAliveSecureAgent,
@@ -21,7 +21,7 @@ const options = {
 (async () => {
   try {
     await connectDB();
-    logger.info("Connected to DB");
+    logger.info("Connected");
 
     const req = http.request(options, (res) => {
       logger.info(`STATUS: ${res.statusCode}`);

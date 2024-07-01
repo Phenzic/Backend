@@ -3,7 +3,6 @@ import logger from "./logger";
 import config from "./index";
 
 const uri = `mongodb+srv://${config.DB_NAME}:${config.DB_PW}@${config.DB_CLUSTER}/?retryWrites=true&w=majority&appName=SeiChat`;
-
 if (!uri) {
   throw new Error("DB_URI is undefined");
 }
@@ -14,7 +13,7 @@ let db: Db;
 const connectDB = async (): Promise<void> => {
   try {
     await client.connect();
-    logger.info("Connecting to DB.....");
+    logger.info("Connecting...");
     db = client.db("seichat_calender");
   } catch (error) {
     logger.error(`Error connecting to MongoDB: ${error}`);
