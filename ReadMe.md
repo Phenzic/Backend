@@ -72,4 +72,4 @@ For detailed information about the user APIs, refer to the [User Documentation](
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
