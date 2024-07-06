@@ -11,7 +11,7 @@ const Config = {
 };
 
 if (!Config.JWT_SECRET) {
-  throw new Error('JWT_SECRET_KEY is not defined in environment variables');
+  throw new Error("JWT_SECRET_KEY is not defined in environment variables");
 }
 
-export default Config
+export default Config;
