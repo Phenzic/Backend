@@ -3,15 +3,15 @@
 This documentation provides an overview of the API endpoints for user authentication and management.
 
 ## Table Of Content
-- [Endpoint](#endpoints)
-    - [Signup](#sign-up)
-    - [Signin](#sign-in)
-    - [Get all Users](#get-all-users)
-    - [Get User By Id](#get-user-by-id)
-    - [Create User](#create-user)
-    - [Update User](#update-user-profile)
-    - [Delete User](#delete-user)
 
+- [Endpoint](#endpoints)
+  - [Signup](#sign-up)
+  - [Signin](#sign-in)
+  - [Get all Users](#get-all-users)
+  - [Get User By Id](#get-user-by-id)
+  - [Create User](#create-user)
+  - [Update User](#update-user-profile)
+  - [Delete User](#delete-user)
 
 ## Endpoints
 
@@ -24,6 +24,7 @@ This documentation provides an overview of the API endpoints for user authentica
 **Description**: Register a new user.
 
 **Request Body**:
+
 ```json
 {
   "fullName": "John Doe",
@@ -48,6 +49,7 @@ This documentation provides an overview of the API endpoints for user authentica
 ```
 
 **Response**:
+
 - **201 Created**:
   ```json
   {
@@ -76,6 +78,7 @@ This documentation provides an overview of the API endpoints for user authentica
 **Description**: Authenticate an existing user.
 
 **Request Body**:
+
 ```json
 {
   "email": "john.doe@example.com",
@@ -84,6 +87,7 @@ This documentation provides an overview of the API endpoints for user authentica
 ```
 
 **Response**:
+
 - **200 OK**:
   ```json
   {
@@ -112,6 +116,7 @@ This documentation provides an overview of the API endpoints for user authentica
 **Description**: Retrieve a list of all users.
 
 **Response**:
+
 - **200 OK**:
   ```json
   [
@@ -120,8 +125,8 @@ This documentation provides an overview of the API endpoints for user authentica
       "fullName": "John Doe",
       "email": "john.doe@example.com",
       "dateOfBirth": "1990-01-01",
-      "phoneNumber": "+1234567890",
-    },
+      "phoneNumber": "+1234567890"
+    }
   ]
   ```
 - **500 Internal Server Error**:
@@ -140,9 +145,11 @@ This documentation provides an overview of the API endpoints for user authentica
 **Description**: Retrieve the authenticated user's details using the JWT token.
 
 **Headers**:
+
 - `Authorization`: `Bearer jwt_token` (required)
 
 **Response**:
+
 - **200 OK**:
   ```json
   {
@@ -150,7 +157,7 @@ This documentation provides an overview of the API endpoints for user authentica
     "fullName": "John Doe",
     "email": "john.doe@example.com",
     "dateOfBirth": "1990-01-01",
-    "phoneNumber": "+1234567890",
+    "phoneNumber": "+1234567890"
     // Other user fields...
   }
   ```
@@ -176,18 +183,20 @@ This documentation provides an overview of the API endpoints for user authentica
 **Description**: Create a new user profile.
 
 **Request Body**:
+
 ```json
 {
   "fullName": "John Doe",
   "email": "john.doe@example.com",
   "password": "password123",
   "dateOfBirth": "1990-01-01",
-  "phoneNumber": "+1234567890",
+  "phoneNumber": "+1234567890"
   // Other user fields...
 }
 ```
 
 **Response**:
+
 - **201 Created**:
   ```json
   {
@@ -195,7 +204,7 @@ This documentation provides an overview of the API endpoints for user authentica
     "fullName": "John Doe",
     "email": "john.doe@example.com",
     "dateOfBirth": "1990-01-01",
-    "phoneNumber": "+1234567890",
+    "phoneNumber": "+1234567890"
     // Other user fields...
   }
   ```
@@ -215,20 +224,23 @@ This documentation provides an overview of the API endpoints for user authentica
 **Description**: Update an existing user's profile.
 
 **Parameters**:
+
 - `id` (required): The UUID of the user.
 
 **Request Body**:
+
 ```json
 {
   "fullName": "John Doe",
   "email": "john.doe@example.com",
   "dateOfBirth": "1990-01-01",
-  "phoneNumber": "+1234567890",
+  "phoneNumber": "+1234567890"
   // Other user fields...
 }
 ```
 
 **Response**:
+
 - **200 OK**:
   ```json
   {
@@ -236,7 +248,7 @@ This documentation provides an overview of the API endpoints for user authentica
     "fullName": "John Doe",
     "email": "john.doe@example.com",
     "dateOfBirth": "1990-01-01",
-    "phoneNumber": "+1234567890",
+    "phoneNumber": "+1234567890"
     // Updated user fields...
   }
   ```
@@ -262,9 +274,11 @@ This documentation provides an overview of the API endpoints for user authentica
 **Description**: Delete a user by their ID.
 
 **Parameters**:
+
 - `id` (required): The UUID of the user.
 
 **Response**:
+
 - **204 No Content**
 - **404 Not Found**:
   ```json
