@@ -6,15 +6,12 @@ import {
   getUsersCollection,
   hashPassword,
   comparePassword,
-
 } from "../models/userModel";
 import config from "../config";
 import dotenv from "dotenv";
-import { getDB } from '../config/database';
-
+import { getDB } from "../config/database";
 
 const secretKey = config.JWT_SECRET;
-
 
 const signUp = async (req: Request, res: Response): Promise<void> => {
   const {
@@ -35,7 +32,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     nationalIdentification,
     medicalIndustryInsurance,
     lAndA,
-    role
+    role,
   } = req.body;
 
   try {
@@ -45,7 +42,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     const existingUser = await usersCollection.findOne({ email });
 
     if (existingUser) {
-      res.status(400).json({ message: 'User with this email already exists' });
+      res.status(400).json({ message: "User with this email already exists" });
       return;
     }
 
@@ -69,17 +66,16 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
       nationalIdentification,
       medicalIndustryInsurance,
       lAndA,
-      role: role || 'patient'
+      role: role || "patient",
     };
 
     await usersCollection.insertOne(newUser);
-
 
     const token = jwt.sign({ id: newUser.id }, secretKey, { expiresIn: "1h" });
 
     res.status(201).json({ token });
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -91,14 +87,14 @@ const signIn = async (req: Request, res: Response): Promise<void> => {
 
     const user = await usersCollection.findOne({ email });
 
-    if (user && await comparePassword(password, user.password)) {
-      const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: '1h' });
+    if (user && (await comparePassword(password, user.password))) {
+      const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: "1h" });
       res.json({ token });
     } else {
-      res.status(401).send('Invalid email or password');
+      res.status(401).send("Invalid email or password");
     }
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -109,7 +105,7 @@ const getUsers = async (req: Request, res: Response): Promise<void> => {
     const users = await usersCollection.find().toArray();
     res.json(users);
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -124,13 +120,12 @@ const getUserById = async (req: Request, res: Response): Promise<void> => {
     if (user) {
       res.json(user);
     } else {
-      res.status(404).send('User not found');
+      res.status(404).send("User not found");
     }
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 const createUser = async (req: Request, res: Response): Promise<void> => {
   const newUser: User = req.body;
@@ -141,29 +136,34 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
     await usersCollection.insertOne(newUser);
     res.status(201).json(newUser);
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-const updateUserProfile = async (req: Request, res: Response): Promise<void> => {
+const updateUserProfile = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   const { id } = req.params;
   const updatedUser: User = req.body;
 
   try {
     const db = getDB();
     const usersCollection = getUsersCollection(db);
-    const result = await usersCollection.updateOne({ id }, { $set: updatedUser });
+    const result = await usersCollection.updateOne(
+      { id },
+      { $set: updatedUser },
+    );
 
     if (result.modifiedCount > 0) {
       res.json(updatedUser);
     } else {
-      res.status(404).send('User not found');
+      res.status(404).send("User not found");
     }
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
-
 
 const deleteUser = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
@@ -176,10 +176,10 @@ const deleteUser = async (req: Request, res: Response): Promise<void> => {
     if (result.deletedCount > 0) {
       res.status(204).send();
     } else {
-      res.status(404).send('User not found');
+      res.status(404).send("User not found");
     }
   } catch (err) {
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 export {

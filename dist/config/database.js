@@ -15,8 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.closeDB = exports.connectDB = exports.getDB = void 0;
 const mongodb_1 = require("mongodb");
 const logger_1 = __importDefault(require("./logger"));
-const index_1 = __importDefault(require("./index"));
-const uri = `mongodb+srv://${index_1.default.DB_NAME}:${index_1.default.DB_PW}@${index_1.default.DB_CLUSTER}/?retryWrites=true&w=majority&appName=SeiChat`;
+// const uri = `mongodb+srv://${config.DB_NAME}:${config.DB_PW}@${config.DB_CLUSTER}/?retryWrites=true&w=majority&appName=MediLog`;
+const uri = "mongodb+srv://Phenzic:bGo3BxTxQErt4cYq@medilog.gubyjh8.mongodb.net/?retryWrites=true&w=majority&appName=MediLog";
+// MONGODB_URI=mongodb+srv://Phenzic:bGo3BxTxQErt4cYq@medilog.gubyjh8.mongodb.net/?retryWrites=true&w=majority&appName=MediLog
+console.log(uri);
 if (!uri) {
     throw new Error("DB_URI is undefined");
 }
@@ -26,7 +28,7 @@ const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield client.connect();
         logger_1.default.info("Connecting...");
-        db = client.db("seichat_calender");
+        db = client.db("medilog");
     }
     catch (error) {
         logger_1.default.error(`Error connecting to MongoDB: ${error}`);

@@ -9,12 +9,12 @@ const userController_1 = require("../controllers/userController");
 const authMiddleWare_1 = require("../config/authMiddleWare");
 const router = express_1.default.Router();
 // Auth routes
-router.post('/signup', userController_1.signUp);
-router.post('/signin', userController_1.signIn);
+router.post("/signup", userController_1.signUp);
+router.post("/signin", userController_1.signIn);
 // User routes with authentication
-router.get('/', authMiddleWare_1.authenticateJWT, userController_1.getUsers);
+router.get("/", authMiddleWare_1.authenticateJWT, userController_1.getUsers);
 // router.post('/', authenticateJWT, createUser);
-router.get('/me', authMiddleWare_1.authenticateJWT, userController_1.getUserById);
-router.delete('/:id', authMiddleWare_1.authenticateJWT, userController_1.deleteUser);
-router.put('/:id', authMiddleWare_1.authenticateJWT, userController_1.updateUserProfile);
+router.get("/me", authMiddleWare_1.authenticateJWT, userController_1.getUserById);
+router.delete("/:id", authMiddleWare_1.authenticateJWT, userController_1.deleteUser);
+router.put("/:id", authMiddleWare_1.authenticateJWT, userController_1.updateUserProfile);
 exports.default = router;

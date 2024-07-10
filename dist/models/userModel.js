@@ -12,9 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.comparePassword = exports.hashPassword = exports.getUserId = exports.users = void 0;
+exports.getUsersCollection = exports.comparePassword = exports.hashPassword = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-exports.users = [];
+let usersCollection;
+const getUsersCollection = (db) => {
+    if (!usersCollection) {
+        usersCollection = db.collection('users');
+    }
+    return usersCollection;
+};
+exports.getUsersCollection = getUsersCollection;
+// export const users: User[] = [];
 const hashPassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
     const salt = yield bcryptjs_1.default.genSalt(10);
     return bcryptjs_1.default.hash(password, salt);
@@ -24,7 +32,3 @@ const comparePassword = (enteredPassword, storedPassword) => __awaiter(void 0, v
     return bcryptjs_1.default.compare(enteredPassword, storedPassword);
 });
 exports.comparePassword = comparePassword;
-const getUserId = (id) => {
-    return exports.users.find(user => user.id === id);
-};
-exports.getUserId = getUserId;

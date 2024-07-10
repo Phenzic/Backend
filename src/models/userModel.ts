@@ -1,6 +1,5 @@
 import bcrypt from "bcryptjs";
-import { Db, Collection } from 'mongodb';
-
+import { Db, Collection } from "mongodb";
 
 export interface User {
   id: string;
@@ -21,14 +20,14 @@ export interface User {
   nationalIdentification: string;
   medicalIndustryInsurance: string;
   lAndA: string;
-  role: 'doctor' | 'nurse' | 'patient';
+  role: "doctor" | "nurse" | "patient";
 }
 
 let usersCollection: Collection<User>;
 
 const getUsersCollection = (db: Db): Collection<User> => {
   if (!usersCollection) {
-    usersCollection = db.collection<User>('users');
+    usersCollection = db.collection<User>("users");
   }
   return usersCollection;
 };

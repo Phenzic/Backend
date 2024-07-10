@@ -13,6 +13,6 @@ const Config = {
     JWT_SECRET: process.env.SECRET_KEY,
 };
 if (!Config.JWT_SECRET) {
-    throw new Error('JWT_SECRET_KEY is not defined in environment variables');
+    throw new Error("JWT_SECRET_KEY is not defined in environment variables");
 }
 exports.default = Config;

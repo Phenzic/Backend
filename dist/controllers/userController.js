@@ -17,68 +17,145 @@ const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const uuid_1 = require("uuid");
 const userModel_1 = require("../models/userModel");
 const config_1 = __importDefault(require("../config"));
-const authMiddleWare_1 = require("../config/authMiddleWare");
+const database_1 = require("../config/database");
 const secretKey = config_1.default.JWT_SECRET;
 const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { name, email, password } = req.body;
-    const hashedPassword = yield (0, userModel_1.hashPassword)(password);
-    const newUser = { id: (0, uuid_1.v4)(), name, email, password: hashedPassword };
-    userModel_1.users.push(newUser);
-    const token = jsonwebtoken_1.default.sign({ id: newUser.id }, secretKey, { expiresIn: '1h' });
-    res.status(201).json({ token });
+    const { fullName, email, password, dateOfBirth, phoneNumber, photo, profileDescription, facility, cadre, firstTimeConsultationFee, followUpConsultationFee, availableTime, annualLicense, fullLicense, nationalIdentification, medicalIndustryInsurance, lAndA, role } = req.body;
+    try {
+        const db = (0, database_1.getDB)();
+        const usersCollection = (0, userModel_1.getUsersCollection)(db);
+        const existingUser = yield usersCollection.findOne({ email });
+        if (existingUser) {
+            res.status(400).json({ message: 'User with this email already exists' });
+            return;
+        }
+        const hashedPassword = yield (0, userModel_1.hashPassword)(password);
+        const newUser = {
+            id: (0, uuid_1.v4)(),
+            fullName,
+            email,
+            password: hashedPassword,
+            dateOfBirth,
+            phoneNumber,
+            photo,
+            profileDescription,
+            facility,
+            cadre,
+            firstTimeConsultationFee,
+            followUpConsultationFee,
+            availableTime,
+            annualLicense,
+            fullLicense,
+            nationalIdentification,
+            medicalIndustryInsurance,
+            lAndA,
+            role: role || 'patient'
+        };
+        yield usersCollection.insertOne(newUser);
+        const token = jsonwebtoken_1.default.sign({ id: newUser.id }, secretKey, { expiresIn: "1h" });
+        res.status(201).json({ token });
+    }
+    catch (err) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
 });
 exports.signUp = signUp;
 const signIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = req.body;
-    const user = userModel_1.users.find((u) => u.email === email);
-    if (user && (yield (0, userModel_1.comparePassword)(password, user.password))) {
-        const token = jsonwebtoken_1.default.sign({ id: user.id }, secretKey, { expiresIn: '1h' });
-        res.json({ token });
+    try {
+        const db = (0, database_1.getDB)();
+        const usersCollection = (0, userModel_1.getUsersCollection)(db);
+        const user = yield usersCollection.findOne({ email });
+        if (user && (yield (0, userModel_1.comparePassword)(password, user.password))) {
+            const token = jsonwebtoken_1.default.sign({ id: user.id }, secretKey, { expiresIn: '1h' });
+            res.json({ token });
+        }
+        else {
+            res.status(401).send('Invalid email or password');
+        }
     }
-    else {
-        res.status(401).send('Invalid email or password');
+    catch (err) {
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 exports.signIn = signIn;
-const getUsers = (req, res) => {
-    res.json(userModel_1.users);
-};
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const db = (0, database_1.getDB)();
+        const usersCollection = (0, userModel_1.getUsersCollection)(db);
+        const users = yield usersCollection.find().toArray();
+        res.json(users);
+    }
+    catch (err) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 exports.getUsers = getUsers;
-const getUserById = (req, res) => {
-    res.json(authMiddleWare_1.fetchUser);
-};
+const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const decoded = req.decoded;
+    try {
+        const db = (0, database_1.getDB)();
+        const usersCollection = (0, userModel_1.getUsersCollection)(db);
+        const user = yield usersCollection.findOne({ id: decoded.id });
+        if (user) {
+            res.json(user);
+        }
+        else {
+            res.status(404).send('User not found');
+        }
+    }
+    catch (err) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 exports.getUserById = getUserById;
-// const getUserById = (id: string): User | undefined => {
-//   return users.find(user => user.id === id);
-// };
-const createUser = (req, res) => {
+const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const newUser = req.body;
-    userModel_1.users.push(newUser);
-    res.status(201).json(newUser);
-};
+    try {
+        const db = (0, database_1.getDB)();
+        const usersCollection = (0, userModel_1.getUsersCollection)(db);
+        yield usersCollection.insertOne(newUser);
+        res.status(201).json(newUser);
+    }
+    catch (err) {
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
 exports.createUser = createUser;
-const updateUserProfile = (req, res) => {
-    const id = req.params.id;
+const updateUserProfile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
     const updatedUser = req.body;
-    const userIndex = userModel_1.users.findIndex((user) => user.id === id);
-    if (userIndex !== -1) {
-        userModel_1.users[userIndex] = updatedUser;
-        res.json(updatedUser);
+    try {
+        const db = (0, database_1.getDB)();
+        const usersCollection = (0, userModel_1.getUsersCollection)(db);
+        const result = yield usersCollection.updateOne({ id }, { $set: updatedUser });
+        if (result.modifiedCount > 0) {
+            res.json(updatedUser);
+        }
+        else {
+            res.status(404).send('User not found');
+        }
     }
-    else {
-        res.status(404).send("User not found");
+    catch (err) {
+        res.status(500).json({ message: 'Internal server error' });
     }
-};
+});
 exports.updateUserProfile = updateUserProfile;
-const deleteUser = (req, res) => {
-    const id = req.params.id;
-    const userIndex = userModel_1.users.findIndex((user) => user.id === id);
-    if (userIndex !== -1) {
-        userModel_1.users.splice(userIndex, 1);
-        res.status(204).send();
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { id } = req.params;
+    try {
+        const db = (0, database_1.getDB)();
+        const usersCollection = (0, userModel_1.getUsersCollection)(db);
+        const result = yield usersCollection.deleteOne({ id });
+        if (result.deletedCount > 0) {
+            res.status(204).send();
+        }
+        else {
+            res.status(404).send('User not found');
+        }
     }
-    else {
-        res.status(404).send("User not found");
+    catch (err) {
+        res.status(500).json({ message: 'Internal server error' });
     }
-};
+});
 exports.deleteUser = deleteUser;
