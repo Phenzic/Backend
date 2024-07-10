@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { getUserId, User } from "../models/userModel";
+import { User } from "../models/userModel";
+import { getUserById } from "../controllers/userController";
 import jwt from "jsonwebtoken";
 import Config from "../config";
 
@@ -29,23 +30,23 @@ export const authenticateJWT = (
   }
 };
 
-export const fetchUser = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-): Response | void => {
-  const decoded = (req as any).decoded;
+// export const fetchUser = (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ): Response | void => {
+//   const decoded = (req as any).decoded;
 
-  if (!decoded || !decoded.id) {
-    return res.status(401).send("Access denied. No user ID found in token.");
-  }
+//   if (!decoded || !decoded.id) {
+//     return res.status(401).send("Access denied. No user ID found in token.");
+//   }
 
-  const user = getUserId(decoded.id);
+//   const user = getUserById(decoded.id, );
 
-  if (!user) {
-    return res.status(404).send("User not found");
-  }
+//   if (!user) {
+//     return res.status(404).send("User not found");
+//   }
 
-  (req as any).user = user;
-  next();
-};
+//   (req as any).user = user;
+//   next();
+// };

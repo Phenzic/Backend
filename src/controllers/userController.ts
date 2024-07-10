@@ -3,83 +3,185 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from "uuid";
 import {
   User,
-  users,
+  getUsersCollection,
   hashPassword,
   comparePassword,
-  getUserId,
+
 } from "../models/userModel";
 import config from "../config";
 import dotenv from "dotenv";
-import { fetchUser } from "../config/authMiddleWare";
+import { getDB } from '../config/database';
+
 
 const secretKey = config.JWT_SECRET;
 
+
 const signUp = async (req: Request, res: Response): Promise<void> => {
-  const { name, email, password } = req.body;
-  const hashedPassword = await hashPassword(password);
-  const newUser: User = { id: uuidv4(), name, email, password: hashedPassword };
+  const {
+    fullName,
+    email,
+    password,
+    dateOfBirth,
+    phoneNumber,
+    photo,
+    profileDescription,
+    facility,
+    cadre,
+    firstTimeConsultationFee,
+    followUpConsultationFee,
+    availableTime,
+    annualLicense,
+    fullLicense,
+    nationalIdentification,
+    medicalIndustryInsurance,
+    lAndA,
+    role
+  } = req.body;
 
-  users.push(newUser);
-  const token = jwt.sign({ id: newUser.id }, secretKey, { expiresIn: "1h" });
+  try {
+    const db = getDB();
+    const usersCollection = getUsersCollection(db);
 
-  res.status(201).json({ token });
+    const existingUser = await usersCollection.findOne({ email });
+
+    if (existingUser) {
+      res.status(400).json({ message: 'User with this email already exists' });
+      return;
+    }
+
+    const hashedPassword = await hashPassword(password);
+    const newUser: User = {
+      id: uuidv4(),
+      fullName,
+      email,
+      password: hashedPassword,
+      dateOfBirth,
+      phoneNumber,
+      photo,
+      profileDescription,
+      facility,
+      cadre,
+      firstTimeConsultationFee,
+      followUpConsultationFee,
+      availableTime,
+      annualLicense,
+      fullLicense,
+      nationalIdentification,
+      medicalIndustryInsurance,
+      lAndA,
+      role: role || 'patient'
+    };
+
+    await usersCollection.insertOne(newUser);
+
+
+    const token = jwt.sign({ id: newUser.id }, secretKey, { expiresIn: "1h" });
+
+    res.status(201).json({ token });
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
 const signIn = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
-  const user = users.find((u) => u.email === email);
+  try {
+    const db = getDB();
+    const usersCollection = getUsersCollection(db);
 
-  if (user && (await comparePassword(password, user.password))) {
-    const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: "1h" });
-    res.json({ token });
-  } else {
-    res.status(401).send("Invalid email or password");
+    const user = await usersCollection.findOne({ email });
+
+    if (user && await comparePassword(password, user.password)) {
+      const token = jwt.sign({ id: user.id }, secretKey, { expiresIn: '1h' });
+      res.json({ token });
+    } else {
+      res.status(401).send('Invalid email or password');
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
-const getUsers = (req: Request, res: Response): void => {
-  res.json(users);
+const getUsers = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const db = getDB();
+    const usersCollection = getUsersCollection(db);
+    const users = await usersCollection.find().toArray();
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
-const getUserById = (req: Request, res: Response): void => {
-  res.json(fetchUser);
+const getUserById = async (req: Request, res: Response): Promise<void> => {
+  const decoded = (req as any).decoded;
+
+  try {
+    const db = getDB();
+    const usersCollection = getUsersCollection(db);
+    const user = await usersCollection.findOne({ id: decoded.id });
+
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).send('User not found');
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
-// const getUserById = (id: string): User | undefined => {
-//   return users.find(user => user.id === id);
-// };
 
-const createUser = (req: Request, res: Response): void => {
+const createUser = async (req: Request, res: Response): Promise<void> => {
   const newUser: User = req.body;
-  users.push(newUser);
-  res.status(201).json(newUser);
+
+  try {
+    const db = getDB();
+    const usersCollection = getUsersCollection(db);
+    await usersCollection.insertOne(newUser);
+    res.status(201).json(newUser);
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
-const updateUserProfile = (req: Request, res: Response): void => {
-  const id = req.params.id;
+const updateUserProfile = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
   const updatedUser: User = req.body;
-  const userIndex = users.findIndex((user) => user.id === id);
 
-  if (userIndex !== -1) {
-    users[userIndex] = updatedUser;
-    res.json(updatedUser);
-  } else {
-    res.status(404).send("User not found");
+  try {
+    const db = getDB();
+    const usersCollection = getUsersCollection(db);
+    const result = await usersCollection.updateOne({ id }, { $set: updatedUser });
+
+    if (result.modifiedCount > 0) {
+      res.json(updatedUser);
+    } else {
+      res.status(404).send('User not found');
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
 
-const deleteUser = (req: Request, res: Response): void => {
-  const id = req.params.id;
-  const userIndex = users.findIndex((user) => user.id === id);
 
-  if (userIndex !== -1) {
-    users.splice(userIndex, 1);
-    res.status(204).send();
-  } else {
-    res.status(404).send("User not found");
+const deleteUser = async (req: Request, res: Response): Promise<void> => {
+  const { id } = req.params;
+
+  try {
+    const db = getDB();
+    const usersCollection = getUsersCollection(db);
+    const result = await usersCollection.deleteOne({ id });
+
+    if (result.deletedCount > 0) {
+      res.status(204).send();
+    } else {
+      res.status(404).send('User not found');
+    }
+  } catch (err) {
+    res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 export {
   signUp,
   signIn,

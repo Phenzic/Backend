@@ -1,13 +1,39 @@
 import bcrypt from "bcryptjs";
+import { Db, Collection } from 'mongodb';
+
 
 export interface User {
   id: string;
-  name: string;
+  fullName: string;
   email: string;
   password: string;
+  dateOfBirth: Date;
+  phoneNumber: string;
+  photo: string;
+  profileDescription: string;
+  facility: string;
+  cadre: string;
+  firstTimeConsultationFee: number;
+  followUpConsultationFee: number;
+  availableTime: string;
+  annualLicense: string;
+  fullLicense: string;
+  nationalIdentification: string;
+  medicalIndustryInsurance: string;
+  lAndA: string;
+  role: 'doctor' | 'nurse' | 'patient';
 }
 
-export const users: User[] = [];
+let usersCollection: Collection<User>;
+
+const getUsersCollection = (db: Db): Collection<User> => {
+  if (!usersCollection) {
+    usersCollection = db.collection<User>('users');
+  }
+  return usersCollection;
+};
+
+// export const users: User[] = [];
 
 const hashPassword = async (password: string): Promise<string> => {
   const salt = await bcrypt.genSalt(10);
@@ -21,8 +47,8 @@ const comparePassword = async (
   return bcrypt.compare(enteredPassword, storedPassword);
 };
 
-const getUserId = (id: string): User | undefined => {
-  return users.find((user) => user.id === id);
-};
+// const getUserId = (id: string): User | undefined => {
+//   return users.find((user) => user.id === id);
+// };
 
-export { getUserId, hashPassword, comparePassword };
+export { hashPassword, comparePassword, getUsersCollection };
