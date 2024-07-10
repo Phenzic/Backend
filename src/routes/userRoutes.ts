@@ -22,6 +22,6 @@ router.get("/", authenticateJWT, getUsers);
 // router.post('/', authenticateJWT, createUser);
 router.get("/me", authenticateJWT, getUserById);
 router.delete("/:id", authenticateJWT, deleteUser);
-router.put("/:id", authenticateJWT, updateUserProfile);
+router.get("/:id", authenticateJWT, updateUserProfile);
 
 export default router;

@@ -17,7 +17,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 let usersCollection;
 const getUsersCollection = (db) => {
     if (!usersCollection) {
-        usersCollection = db.collection('users');
+        usersCollection = db.collection("users");
     }
     return usersCollection;
 };

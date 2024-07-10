@@ -16,5 +16,5 @@ router.get("/", authMiddleWare_1.authenticateJWT, userController_1.getUsers);
 // router.post('/', authenticateJWT, createUser);
 router.get("/me", authMiddleWare_1.authenticateJWT, userController_1.getUserById);
 router.delete("/:id", authMiddleWare_1.authenticateJWT, userController_1.deleteUser);
-router.put("/:id", authMiddleWare_1.authenticateJWT, userController_1.updateUserProfile);
+router.get("/:id", authMiddleWare_1.authenticateJWT, userController_1.updateUserProfile);
 exports.default = router;

@@ -2,12 +2,8 @@ import { MongoClient, Db } from "mongodb";
 import logger from "./logger";
 import config from "./index";
 
-// const uri = `mongodb+srv://${config.DB_NAME}:${config.DB_PW}@${config.DB_CLUSTER}/?retryWrites=true&w=majority&appName=MediLog`;
-const uri =
-  "mongodb+srv://Phenzic:bGo3BxTxQErt4cYq@medilog.gubyjh8.mongodb.net/?retryWrites=true&w=majority&appName=MediLog";
-// MONGODB_URI=mongodb+srv://Phenzic:bGo3BxTxQErt4cYq@medilog.gubyjh8.mongodb.net/?retryWrites=true&w=majority&appName=MediLog
+const uri = `mongodb+srv://${config.DB_NAME}:${config.DB_PW}@${config.DB_CLUSTER}/?retryWrites=true&w=majority&appName=MediLog`;
 
-console.log(uri);
 if (!uri) {
   throw new Error("DB_URI is undefined");
 }
