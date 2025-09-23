@@ -38,6 +38,7 @@
   npm run dev
   ```
 
+
 ## Configuration
 
 Configuration settings can be adjusted in the `config/index.ts` file. Make sure to set the appropriate values for your environment.
