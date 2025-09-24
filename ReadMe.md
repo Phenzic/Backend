@@ -1,7 +1,6 @@
 # MediLog Backend Documentation
 
 ## Table of Contents
-
 1. [Installation](#installation)
 2. [Configuration](#configuration)
 3. [Contribution](#contribution)
