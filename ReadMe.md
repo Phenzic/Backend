@@ -66,3 +66,13 @@ Configuration settings can be adjusted in the `config/index.ts` file. Make sure 
   "docs": "https://docs.medilog.com"
 }
 ```
+
+
+## User Requests
+
+For detailed information about the user APIs, refer to the [User Documentation](./docs/user_endpoints.md).
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
+
